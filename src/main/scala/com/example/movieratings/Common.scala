@@ -47,6 +47,10 @@ object Common {
     (movieId, reviews)
   }
 
+  def writeReport(report: List[List[Any]], path: File): Unit = {
+    CsvUtils.writeToFile(report, path)
+  }
+
   def getMovieRatingsPath(dir: String, movieId: String): String =
     dir + File.separator + "mv_" + ("0" * (7 - movieId.length)) + movieId + ".txt"
 
