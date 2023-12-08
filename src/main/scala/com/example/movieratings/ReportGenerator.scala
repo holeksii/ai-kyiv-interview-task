@@ -15,25 +15,24 @@ object ReportGenerator {
   def main(args: Array[String]): Unit = {
     val Array(movieTitlesPath, trainingSetPath, reportPath) = args
 
-    val movies = readFromFileAsList(new File(movieTitlesPath))
-      .filter(m =>
-        !m.get(1).isNullOrEmpty
-          && m.get(1).toInt >= yearBounds._1
-          && m.get(1).toInt <= yearBounds._2
-      )
-      .map(_.values)
+    val movies = readMovies(new File(movieTitlesPath))
+      .filter(m => m.year >= yearBounds._1 && m.year <= yearBounds._2)
 
     val ratingFiles = movies
-      .map(m => Try(new File(getMovieRatingsPath(trainingSetPath, m(0)))))
-      .filter(_.isSuccess)
-      .map(_.get)
+      .map(m => new File(getMovieRatingsPath(trainingSetPath, m.id)))
+      .filter(_.exists)
 
     val report = generateReport(
-      movies.map(m => (m(0), Array(m(1), m(2)))).toMap,
-      ratingFiles,
-      minRatings
-    )
+      movies.map(m => (m.id, m)).toMap,
+      ratingFiles
+    ).filter(_.totalReviews >= minRatings)
+      .sortBy(r => (-r.averageRating, r.movieTitle))
 
-    writeToFile(report, new File(reportPath))
+    writeToFile(
+      report.map { r =>
+        List(r.movieTitle, r.year, r.averageRating, r.totalReviews)
+      },
+      new File(reportPath)
+    )
   }
 }
