@@ -19,9 +19,8 @@ object ReportGenerator {
       )
 
     val ratingFiles = movies
-      .map(m => Try(new File(getMovieRatingsPath(trainingSetPath, m.get(0)))))
-      .filter(_.isSuccess)
-      .map(_.get)
+      .map(m => new File(getMovieRatingsPath(trainingSetPath, m.get(0))))
+      .filter(_.exists)
 
     val report = generateReport(
       movies.map(m => (m.get(0), List(m.get(1), m.get(2)))).toMap,
