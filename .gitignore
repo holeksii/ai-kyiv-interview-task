@@ -1,0 +1,9 @@
+*.class
+*.log
+.vscode
+.metals
+.bsp
+.bloop
+target/
+
+src/main/resources
