@@ -37,9 +37,6 @@ object Common {
     sum / reviews.size.toDouble
   }
 
-  def getMovieRatingsPath(dir: String, movieId: Int): String =
-    dir + File.separator + "mv_" + ("0" * (7 - movieId.toString.length)) + movieId + ".txt"
-
   def readMovies(path: File): List[Movie] = {
     CsvUtils
       .readFromFileAsList(path)
@@ -54,6 +51,18 @@ object Common {
     val reviews = entries.tail.map(Review(_))
     (movieId, reviews)
   }
+
+  def writeReport(report: List[Report], path: File): Unit = {
+    CsvUtils.writeToFile(
+      report.map { r =>
+        List(r.movieTitle, r.year, r.averageRating, r.totalReviews)
+      },
+      path
+    )
+  }
+
+  def getMovieRatingsPath(dir: String, movieId: Int): String =
+    dir + File.separator + "mv_" + ("0" * (7 - movieId.toString.length)) + movieId + ".txt"
 
   implicit class StringExtensions(s: String) {
     def isNullOrEmpty: Boolean =

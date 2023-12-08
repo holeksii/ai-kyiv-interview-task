@@ -1,10 +1,6 @@
 package com.example.movieratings
 
-import scala.annotation.tailrec
-import scala.util.Try
 import java.io.File
-import CsvUtils.{readFromFileAsList, writeToFile}
-import org.apache.commons.csv.CSVRecord
 import Common._
 
 object ReportGenerator {
@@ -28,11 +24,6 @@ object ReportGenerator {
     ).filter(_.totalReviews >= minRatings)
       .sortBy(r => (-r.averageRating, r.movieTitle))
 
-    writeToFile(
-      report.map { r =>
-        List(r.movieTitle, r.year, r.averageRating, r.totalReviews)
-      },
-      new File(reportPath)
-    )
+    writeReport(report, new File(reportPath))
   }
 }
